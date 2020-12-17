@@ -1,0 +1,16 @@
+{
+  "name": "intelligible-identity-demo",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run test",
+    "dev": "lite-server",
+    "test": "lite-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lite-server": "^2.5.4"
+  }
+}

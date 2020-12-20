@@ -36,7 +36,7 @@ App = {
     try {
       App.identity = new IntelligibleIdentity();
       App.identity.initWeb3(App.web3Provider, App.contractArtifact);
-      const contractAddress = App.contractArtifact.networks['5777'].address; //TODO
+      const contractAddress = App.contractArtifact.networks['3'].address; //TODO
       $('#cstatus').text('Contract found at:');
       $('#clink').text('https://ropsten.etherscan.io/token/' + contractAddress);
       $('#clink').attr(

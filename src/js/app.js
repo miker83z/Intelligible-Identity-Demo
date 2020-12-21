@@ -34,7 +34,7 @@ App = {
     console.log('Web3 Ok');
 
     try {
-      App.networkId = '3';
+      App.networkId = '3'; //'5777';
       App.identity = new IntelligibleIdentity();
       App.identity.initWeb3(
         App.web3Provider,
@@ -65,7 +65,7 @@ App = {
     event.preventDefault();
     console.log('Registration...');
 
-    const name = document.getElementById('name').value;
+    const name = document.getElementById('name').value.replace(/\s/g, '');
     const email = document.getElementById('email').value;
     const personalInformation = { name, email };
 
@@ -80,6 +80,15 @@ App = {
     //Token
     const res = await App.identity.newIdentityTokenWeb3(personalInformation);
     console.log('Token Ok');
+
+    document.getElementById('nameWallet').value = name;
+    document.getElementById('emailWallet').value = email;
+    document.getElementById('pkEth').value = 'Ethereum: ' + res.publicKey;
+    document.getElementById('pkAlg').value =
+      'Algorand: ' + App.contractArtifact.networks[App.networkId].address;
+    document.getElementById('aknWallet').value =
+      'AKNUri: ' + res.identityAknURI;
+    document.getElementById('wallt').style.display = 'block';
 
     //AKN Document
     const aknDocumentPartiallySigned = App.identity.newAKNDocument(

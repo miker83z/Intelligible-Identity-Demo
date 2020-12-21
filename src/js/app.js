@@ -24,6 +24,9 @@ App = {
   initWeb3: function () {
     // Is there an injected web3 instance ?
     try {
+      if (!ethereum.isMetaMask) {
+        throw 'You need an Ethereum provider (Metamask)';
+      }
       App.web3Provider = ethereum;
       ethereum.enable();
     } catch (error) {
@@ -34,9 +37,8 @@ App = {
     console.log('Web3 Ok');
 
     try {
-      App.networkId = '3'; //'5777';
-      App.identity = new IntelligibleIdentity();
-      App.identity.initWeb3(
+      App.networkId = ethereum.networkVersion;
+      App.identity = new IntelligibleIdentity.web3.Web3Wrapper(
         App.web3Provider,
         App.contractArtifact,
         App.networkId
@@ -49,10 +51,10 @@ App = {
         'href',
         'https://ropsten.etherscan.io/token/' + contractAddress
       );
+      console.log('Contract found, ready to work');
     } catch (error) {
       console.log(error);
     }
-    console.log('Contract found, ready to work');
 
     return App.bindEvents();
   },
@@ -78,31 +80,35 @@ App = {
     );
 
     //Token
-    const res = await App.identity.newIdentityTokenWeb3(personalInformation);
+    const res = await App.identity.newIdentityToken(personalInformation);
     console.log('Token Ok');
+
+    const intelligibleOneAlgo = new IntelligibleIdentity.algo.AlgoWrapper();
+    const publicKeyAlgo = intelligibleOneAlgo.newAddress().addr;
+    console.log('Algo Ok');
 
     document.getElementById('nameWallet').value = name;
     document.getElementById('emailWallet').value = email;
     document.getElementById('pkEth').value = 'Ethereum: ' + res.publicKey;
-    document.getElementById('pkAlg').value =
-      'Algorand: ' + App.contractArtifact.networks[App.networkId].address;
+    document.getElementById('pkAlg').value = 'Algorand: ' + publicKeyAlgo;
     document.getElementById('aknWallet').value =
       'AKNUri: ' + res.identityAknURI;
     document.getElementById('wallt').style.display = 'block';
 
     //AKN Document
-    const aknDocumentPartiallySigned = App.identity.newAKNDocument(
+    const aknDocumentPartiallySigned = IntelligibleIdentity.akn.newAKNDocument(
       res.identityAknURI,
       personalInformation,
       res.publicKey,
-      res.tokenId
+      res.tokenId,
+      publicKeyAlgo
     );
     $('#editorTitle').text('Partially signed Akoma Ntoso Document');
     App.editor.setValue(aknDocumentPartiallySigned);
     console.log('Partially signed Ok');
 
     //Sign
-    const aknDocumentComplete = await App.identity.signDataWeb3(
+    const aknDocumentComplete = await App.identity.signData(
       aknDocumentPartiallySigned
     );
     $('#editorTitle').text('Complete Akoma Ntoso Document');
@@ -115,11 +121,4 @@ $(function () {
   $(window).load(function () {
     App.init();
   });
-});
-
-$('form').keypress(function (e) {
-  //Enter key
-  if (e.which == 13) {
-    return false;
-  }
 });

@@ -1,16 +1,48 @@
 {
-  "name": "intelligible-identity-demo",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "name": "intelligible-suite-demo",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "npm run test",
-    "dev": "lite-server",
-    "test": "lite-server"
+    "serve": "vue-cli-service serve --port 2222",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "lite-server": "^2.5.4"
-  }
+    "@intelligiblesuite/identity": "file:../IntelligibleSuite/packages/Intelligible-Identity-SDK",
+    "@metamask/detect-provider": "^1.2.0",
+    "core-js": "^3.6.5",
+    "ipfs-core": "^0.4.1",
+    "uint8arrays": "^2.0.5",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.3",
+    "vuex": "^4.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.18.0",
+    "eslint-plugin-vue": "^7.0.0-0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }

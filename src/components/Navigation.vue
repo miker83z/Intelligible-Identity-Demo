@@ -19,16 +19,14 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/">Home</router-link>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/documents">Documents</router-link>
+        </li>
         <li class="nav-item" v-if="!isAuthenticated">
           <router-link class="nav-link" to="/login">Login</router-link>
         </li>
         <li class="nav-item" v-if="!isAuthenticated">
           <router-link class="nav-link" to="/signup">Signup</router-link>
-        </li>
-        <li class="nav-item" v-if="isAuthenticated">
-          <router-link class="nav-link" to="/certificates"
-            >Certificates</router-link
-          >
         </li>
         <li class="nav-item" v-if="isAuthenticated">
           <a href="#" class="nav-link" @click.prevent="onLogout()">Logout</a>

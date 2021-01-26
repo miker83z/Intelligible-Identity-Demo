@@ -7,6 +7,7 @@ export default createStore({
     loadingDescription: '',
     web3Provider: '',
     networkVersion: '',
+    web3ProviderConnected: false,
     intelligibleIdentity: '',
     ipfs: '',
     identityFiles: [],
@@ -22,6 +23,9 @@ export default createStore({
     },
     SET_NETWORK_VERSION(state, payload) {
       state.networkVersion = payload.netVer;
+    },
+    SET_WEB3_CONNECTED(state, payload) {
+      state.web3ProviderConnected = payload.connected;
     },
     SET_INTELLIGIBLE_IDENTITY(state, payload) {
       state.intelligibleIdentity = payload.iid;
@@ -42,6 +46,26 @@ export default createStore({
     },
     isAuthenticated(state) {
       return typeof state.intelligibleIdentity === 'object';
+    },
+    noProvider(state) {
+      return !state.web3Provider || !state.web3ProviderConnected;
+    },
+    getDocumentInfo(state) {
+      return (payload) => {
+        if (state.identityFiles !== undefined) {
+          const tmp = state.identityFiles.find(
+            (elem) => elem['id'] === payload.id
+          );
+          if (tmp !== undefined) return { ...tmp, type: 'Identity' };
+        }
+        if (state.certificateFiles !== undefined) {
+          const tmp = state.certificateFiles.find(
+            (elem) => elem['id'] === payload.id
+          );
+          if (tmp !== undefined) return { ...tmp, type: 'Certificate' };
+        }
+        return undefined;
+      };
     },
   },
   actions,

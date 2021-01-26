@@ -144,7 +144,7 @@ export default {
           email: this.email,
           password: this.password,
         });
-        this.$router.push("/certificates");
+        this.$router.push("/documents");
       } catch (error) {
         this.registrationError = error;
       } finally {

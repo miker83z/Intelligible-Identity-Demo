@@ -2,18 +2,20 @@ import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store';
 
 const Login = () =>
-  import(/* webpackChunkName: "Login" */ '../pages/auth/Login.vue');
-const Signup = () => import('../pages/auth/Signup.vue');
-const Home = () => import('../pages/Home.vue');
-const GetMetamask = () => import('../pages/GetMetamask.vue');
-const Certificates = () => import('../pages/Certificates.vue');
+  import(/* webpackChunkName: "Login" */ '../views/auth/Login.vue');
+const Signup = () => import('../views/auth/Signup.vue');
+const Home = () => import('../views/Home.vue');
+const GetMetamask = () => import('../views/GetMetamask.vue');
+const Documents = () => import('../views/Documents.vue');
+const Document = () => import('../views/Document.vue');
 
 const routes = [
   { path: '', component: Home },
   { path: '/metamask', component: GetMetamask },
   { path: '/login', component: Login, meta: { auth: false } },
   { path: '/signup', component: Signup, meta: { auth: false } },
-  { path: '/certificates', component: Certificates, meta: { auth: true } },
+  { path: '/documents', component: Documents },
+  { path: '/documents/:id', component: Document },
 ];
 
 const router = createRouter({
@@ -22,14 +24,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if ('auth' in to.meta && to.meta.auth && store.getters['getToken']) {
+  if ('auth' in to.meta && to.meta.auth && !store.getters['isAuthenticated']) {
+    console.log('qua');
     next('/login');
   } else if (
     'auth' in to.meta &&
     !to.meta.auth &&
     store.getters['isAuthenticated']
   ) {
-    next('/certificates');
+    console.log('la');
+    next('/home');
   } else {
     next();
   }

@@ -1,6 +1,7 @@
 import { IntelligibleIdentity } from '@intelligiblesuite/identity';
 import intelligibleIdArtifact from '../assets/abi/IntelligibleIdentity.json';
 import detectEthereumProvider from '@metamask/detect-provider';
+import config from '../configs/config.js';
 const uint8ArrayConcat = require('uint8arrays/concat');
 const uint8ArrayFromString = require('uint8arrays/from-string');
 const uint8ArrayToString = require('uint8arrays/to-string');
@@ -11,6 +12,7 @@ export default {
 
     if (provider) {
       commit('SET_WEB3_PROVIDER', { provider });
+      dispatch('checkWeb3Connected');
       dispatch('checkNetworkId');
     } else {
       commit('SET_WEB3_PROVIDER', { provider: '' });
@@ -28,6 +30,20 @@ export default {
       commit('SET_NETWORK_VERSION', { netVer });
     } catch (error) {
       commit('SET_NETWORK_VERSION', { netVer: '' });
+    }
+  },
+
+  checkWeb3Connected({ state, commit }) {
+    const p = state.web3Provider;
+    if (!p) {
+      commit('SET_WEB3_CONNECTED', { connected: false });
+      throw new Error('No web3 provider (Metamask) available!');
+    }
+    try {
+      const connected = p.isConnected();
+      commit('SET_WEB3_CONNECTED', { connected });
+    } catch (error) {
+      commit('SET_WEB3_CONNECTED', { connected: false });
     }
   },
 
@@ -60,9 +76,7 @@ export default {
         loading: true,
         description: 'Uploading the document to IPFS',
       });
-      const fileAdded = await dispatch('publishIPFS', {
-        stringToUpload: iid.akn.finalize(),
-      });
+      const fileAdded = await dispatch('publishIPFS', { iid });
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
         description: 'Finalizing your Ethereum token...',
@@ -103,7 +117,7 @@ export default {
         description: 'Getting the Akoma Ntoso Identity document from IPFS...',
       });
       const aknString = await dispatch('retrieveIPFS', { cid: web3URI });
-      iid.fromAddressAKN(aknString);
+      iid.fromStringAKN(aknString);
       commit('SET_INTELLIGIBLE_IDENTITY', { iid });
     } catch (error) {
       console.log(error);
@@ -132,7 +146,7 @@ export default {
     }
     try {
       const fileUploaded = await ipfs.add(
-        uint8ArrayFromString(payload.stringToUpload)
+        uint8ArrayFromString(payload.iid.akn.finalize())
       );
 
       const listCid = await dispatch('retrievePublishedListIPFS');
@@ -140,7 +154,10 @@ export default {
       const list = await dispatch('retrieveIPFS', { cid: listCid });
 
       const listJson = JSON.parse(list); //{ identities: [], certificates: [] };
-      listJson.identities.push(fileUploaded.cid.toString());
+      listJson.identities.push({
+        id: fileUploaded.cid.toString(),
+        name: payload.iid.information.name,
+      });
       const listUploaded = await ipfs.add(
         uint8ArrayFromString(JSON.stringify(listJson))
       );
@@ -176,9 +193,7 @@ export default {
     }
     try {
       const published = [];
-      for await (const p of ipfs.name.resolve(
-        `/ipns/QmTGQqdwyPiFeaZQGdHqVopCLtnMY1hyzG3XFUz6Yqmv65`
-      )) {
+      for await (const p of ipfs.name.resolve(config.IPFS_DB_IPNS)) {
         published.push(p);
       }
       return published[published.length - 1];
@@ -197,11 +212,11 @@ export default {
       const list = await dispatch('retrieveIPFS', { cid: listCid });
       const listJson = JSON.parse(list);
       listJson.identities.forEach((file) => {
-        if (!state.identityFiles.includes(file))
+        if (!state.identityFiles.some((elem) => elem.id === file.id))
           commit('ADD_IDENTITY_FILE', { file });
       }); //TODO get ipfs object
       listJson.certificates.forEach((file) => {
-        if (!state.identityFiles.includes(file))
+        if (!state.identityFiles.some((elem) => elem.id === file.id))
           commit('ADD_CERTIFICATE_FILE', { file });
       });
     } catch (err) {

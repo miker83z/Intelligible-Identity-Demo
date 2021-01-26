@@ -53,6 +53,7 @@ export default {
       });
       try {
         await this.login();
+        this.$router.push("/documents");
       } catch (e) {
         this.loginError = e;
       } finally {
@@ -61,8 +62,6 @@ export default {
           description: " ",
         });
       }
-
-      this.$router.push("/certificates");
     },
   },
 };

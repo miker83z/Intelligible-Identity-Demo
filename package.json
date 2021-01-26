@@ -8,13 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@intelligiblesuite/certificates": "file:../IntelligibleSuite/packages/Intelligible-Certificate-SDK",
     "@intelligiblesuite/identity": "file:../IntelligibleSuite/packages/Intelligible-Identity-SDK",
     "@metamask/detect-provider": "^1.2.0",
     "core-js": "^3.6.5",
     "ipfs-core": "^0.4.1",
     "uint8arrays": "^2.0.5",
     "vue": "^3.0.0",
+    "vue-codemirror": "^4.0.6",
     "vue-router": "^4.0.3",
+    "vue3-code-mirror": "^1.0.3",
     "vuex": "^4.0.0-rc.2"
   },
   "devDependencies": {

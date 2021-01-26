@@ -5,20 +5,14 @@
     Please install MetaMask! -> More info
     <router-link to="/metamask">here</router-link>
   </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <div>
-          <router-view></router-view>
-        </div>
-      </div>
-    </div>
+  <div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import Navigation from "./components/Navigation.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import { defineAsyncComponent } from "vue";
 
 const Loader = defineAsyncComponent(() =>
@@ -30,24 +24,31 @@ export default {
   computed: {
     ...mapState({
       showLoading: (state) => state.showLoading,
-      noProvider: (state) => !state.web3Provider,
+      web3Provider: (state) => state.web3Provider,
     }),
-  } /*
+    ...mapGetters(["noProvider"]),
+  },
   watch: {
-    autoLogout(curValue, oldValue) {
-      if (curValue && curValue != oldValue) {
-        this.$router.replace("/login");
+    noProvider(curValue, oldValue) {
+      if (curValue) {
+        setTimeout(this.checkWeb3Provider(), 3000);
+      } else if (!curValue && curValue != oldValue) {
+        this.web3Provider.on("connect", () => this.checkWeb3Provider());
+        this.web3Provider.on("disconnect", () => this.checkWeb3Provider());
       }
     },
-  },*/,
+  },
   components: {
     Navigation,
     Loader,
   },
   created() {
     const ipfs = this.$ipfs;
-    this.$store.dispatch(`checkWeb3Provider`);
-    this.$store.dispatch("initIPFS", { ipfs });
+    this.checkWeb3Provider();
+    this.initIPFS({ ipfs });
+  },
+  methods: {
+    ...mapActions(["checkWeb3Provider", "initIPFS"]),
   },
 };
 </script>

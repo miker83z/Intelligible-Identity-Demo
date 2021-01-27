@@ -29,6 +29,11 @@
           <router-link class="nav-link" to="/signup">Signup</router-link>
         </li>
         <li class="nav-item" v-if="isAuthenticated">
+          <router-link class="nav-link" to="/certificates"
+            >Submit Certificate</router-link
+          >
+        </li>
+        <li class="nav-item" v-if="isAuthenticated">
           <a href="#" class="nav-link" @click.prevent="onLogout()">Logout</a>
         </li>
       </ul>

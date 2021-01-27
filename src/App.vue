@@ -26,7 +26,12 @@ export default {
       showLoading: (state) => state.showLoading,
       web3Provider: (state) => state.web3Provider,
     }),
-    ...mapGetters(["noProvider", "notOnlineWeb3", "notEnabled"]),
+    ...mapGetters([
+      "noProvider",
+      "notOnlineWeb3",
+      "notEnabled",
+      "isAuthenticated",
+    ]),
   },
   watch: {
     noProvider(curValue, oldValue) {
@@ -36,9 +41,13 @@ export default {
       } else if (!curValue && curValue !== oldValue) {
         this.web3Provider.on("connect", () => this.checkWeb3Provider());
         this.web3Provider.on("disconnect", () => this.checkWeb3Provider());
-        this.web3Provider.on("accountsChanged", () =>
-          this.enableWeb3Provider()
-        );
+        this.web3Provider.on("accountsChanged", () => {
+          if (this.isAuthenticated) {
+            this.logout();
+            this.$router.replace("/login");
+          }
+          this.enableWeb3Provider();
+        });
         this.web3Provider.on("chainChanged", () => this.checkNetworkId());
       }
     },
@@ -58,6 +67,7 @@ export default {
       "enableWeb3Provider",
       "checkNetworkId",
       "initIPFS",
+      "logout",
     ]),
     async web3ProviderInterval() {
       await this.checkWeb3Provider();

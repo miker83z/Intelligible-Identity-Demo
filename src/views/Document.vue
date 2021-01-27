@@ -3,7 +3,25 @@
     <div class="row">
       <div class="col-md-12">
         <h2>Document Details</h2>
-        <div v-if="infos.type === 'Identity'">
+        <div v-if="infos !== undefined && infos.type === 'Identity'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Id</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ infos.type }}</td>
+                <td>{{ infos.name }}</td>
+                <td>{{ infos.id }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-else-if="infos !== undefined && infos.type === 'Certificate'">
           <table class="table">
             <thead>
               <tr>

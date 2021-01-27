@@ -1,4 +1,5 @@
 import { IntelligibleIdentity } from '@intelligiblesuite/identity';
+import { IntelligibleCertificate } from '@intelligiblesuite/certificates';
 import config from '../configs/config.js';
 import detectEthereumProvider from '@metamask/detect-provider';
 const uint8ArrayConcat = require('uint8arrays/concat');
@@ -149,6 +150,86 @@ export default {
     });
   },
 
+  async submitCertificate({ dispatch }, payload) {
+    return dispatch('simpleNoAlgoCertificate', payload);
+  },
+
+  async simpleNoAlgoCertificate({ commit, dispatch, state }, payload) {
+    const p = state.web3Provider;
+    const networkId = state.networkVersion;
+    if (!p || !networkId) {
+      throw new Error('No web3 provider (Metamask) available!');
+    }
+    const iid = state.intelligibleIdentity;
+    if (!iid) {
+      throw new Error('Intelligible Identity available!');
+    }
+
+    const ice = new IntelligibleCertificate();
+    try {
+      commit('LOADING_SPINNER_SHOW_MUTATION', {
+        loading: true,
+        description: "Preparing certificate's Ethereum token...",
+      });
+      await ice.prepareNewCertificateWeb3(
+        p,
+        0,
+        config.intelligibleCertArtifact,
+        networkId,
+        payload.addressWeb3
+      );
+      ice.setCertificateInformation(payload);
+
+      //receiver
+      const receiver = new IntelligibleIdentity();
+      const web3URI = await receiver.fromWeb3Address(
+        p,
+        0,
+        payload.addressWeb3,
+        config.intelligibleIdArtifact,
+        networkId
+      );
+      const aknString = await dispatch('retrieveIPFS', { cid: web3URI });
+      receiver.fromStringAKN(aknString);
+      commit('LOADING_SPINNER_SHOW_MUTATION', {
+        loading: true,
+        description:
+          'Creating your Akoma Ntoso Identity document...\nPlease sign it, if you agree with the information presented',
+      });
+
+      const ipfs = state.ipfs;
+      if (!ipfs) {
+        throw new Error('No ipfs provider available!');
+      }
+      const fileUploaded = await ipfs.add(
+        uint8ArrayFromString(iid.akn.finalize()),
+        { onlyHash: true }
+      );
+
+      ice.newCertificateAKN(
+        `${receiver.information.identityAknURI}##${web3URI}`,
+        `${iid.information.identityAknURI}##${fileUploaded.cid.toString()}`
+      );
+      const signature = await iid.web3.signData(
+        ice.akn.finalizeNoConclusions()
+      );
+      ice.akn.addSignature(signature, 'providerSignature');
+      commit('LOADING_SPINNER_SHOW_MUTATION', {
+        loading: true,
+        description: 'Uploading the document to IPFS',
+      });
+      const fileAdded = await dispatch('publishIPFSCertificate', { ice });
+      commit('LOADING_SPINNER_SHOW_MUTATION', {
+        loading: true,
+        description: 'Finalizing your Ethereum token...',
+      });
+      await ice.finalizeNewCertificateWeb3(fileAdded.cid.toString());
+      //commit('SET_INTELLIGIBLE_IDENTITY', { ice });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   async initIPFS({ commit }, payload) {
     try {
       const ipfs = await payload.ipfs;
@@ -169,7 +250,7 @@ export default {
       );
 
       const listCid = await dispatch('retrievePublishedListIPFS');
-      let listJson = { identities: [], certificates: [] };
+      let listJson = config.listTemplate;
       if (listCid !== undefined) {
         listJson = JSON.parse(await dispatch('retrieveIPFS', { cid: listCid }));
       }
@@ -177,6 +258,40 @@ export default {
       listJson.identities.push({
         id: fileUploaded.cid.toString(),
         name: payload.iid.information.name,
+      });
+      const listUploaded = await ipfs.add(
+        uint8ArrayFromString(JSON.stringify(listJson))
+      );
+
+      const ipns = await ipfs.name.publish(listUploaded.cid);
+      console.log(ipns);
+
+      return fileUploaded;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  async publishIPFSCertificate({ dispatch, state }, payload) {
+    const ipfs = state.ipfs;
+    if (!ipfs) {
+      throw new Error('No ipfs provider available!');
+    }
+    try {
+      const fileUploaded = await ipfs.add(
+        uint8ArrayFromString(payload.ice.akn.finalize())
+      );
+
+      const listCid = await dispatch('retrievePublishedListIPFS');
+      let listJson = config.listTemplate;
+      if (listCid !== undefined) {
+        listJson = JSON.parse(await dispatch('retrieveIPFS', { cid: listCid }));
+      }
+
+      listJson.certificates.push({
+        id: fileUploaded.cid.toString(),
+        name: payload.ice.information.name,
+        docURI: payload.ice.information.uri,
       });
       const listUploaded = await ipfs.add(
         uint8ArrayFromString(JSON.stringify(listJson))
@@ -230,7 +345,7 @@ export default {
     }
     try {
       const listCid = await dispatch('retrievePublishedListIPFS');
-      let listJson = { identities: [], certificates: [] };
+      let listJson = config.listTemplate;
       if (listCid !== undefined) {
         listJson = JSON.parse(await dispatch('retrieveIPFS', { cid: listCid }));
       }
@@ -239,7 +354,7 @@ export default {
           commit('ADD_IDENTITY_FILE', { file });
       }); //TODO get ipfs object
       listJson.certificates.forEach((file) => {
-        if (!state.identityFiles.some((elem) => elem.id === file.id))
+        if (!state.certificateFiles.some((elem) => elem.id === file.id))
           commit('ADD_CERTIFICATE_FILE', { file });
       });
     } catch (err) {

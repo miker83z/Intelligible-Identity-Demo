@@ -1,0 +1,33 @@
+{
+  "identities": [
+    {
+      "id": "QmYaMjo4FFn5EnDrn4VpffMhN4QhULYor9bGaeZzNq14En",
+      "name": "JamesBond1611695092873"
+    },
+    {
+      "id": "Qmaa83XThZvBgrCvwKpKGucgiKXr5TjrvkTdSwVxGTXpyj",
+      "name": "MarloBrandon1611699518425"
+    },
+    {
+      "id": "QmQdbTmmxia64eV33tmej7GLqcYvYUrxXTm8fKnPWEx9Sv",
+      "name": "CarlJonhson1611771317624"
+    }
+  ],
+  "certificates": [
+    {
+      "id": "QmPVWd4FD7SL8C5TBxcHULcrjFMgjP6S7avcVHFxjUhhfw",
+      "name": "HelloWorld1611775718362",
+      "docURI": "QmZ4tDuvesekSs4qM5ZBKpXiZGun7S2CYtEZRB3DYXkjGx"
+    },
+    {
+      "id": "QmScdX5ui1LaCwEpXG4Gj7hwbkdRzUyF7uoVgKKH9RYieR",
+      "name": "HelloWorld21611777337078",
+      "docURI": "QmZ4tDuvesekSs4qM5ZBKpXiZGun7S2CYtEZRB3DYXkjGx"
+    },
+    {
+      "id": "QmYYrncMeHfKpVjHw1bwpCDLGtjXeTtmwQJ4en2ja14nLe",
+      "name": "MCOContracts1611777817068",
+      "docURI": "QmcyQoP9W9kLq9Eg3XVDoG3Y89E7DCXmVPYfEaNSJjtpRX"
+    }
+  ]
+}

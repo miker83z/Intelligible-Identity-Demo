@@ -36,10 +36,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="certificate in cartificateFiles" :key="certificate">
-              <td>TODO</td>
-              <td>{{ certificate["id"] }}</td>
-              <td>TODO</td>
+            <tr v-for="certificate in certificateFiles" :key="certificate">
+              <td>{{ certificate["name"] }}</td>
+              <td>
+                <router-link :to="`/documents/${certificate['id']}`">{{
+                  certificate["id"]
+                }}</router-link>
+              </td>
+              <td>
+                <router-link :to="`/documents/${certificate['docURI']}`">{{
+                  certificate["docURI"]
+                }}</router-link>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -54,7 +62,7 @@ export default {
   computed: {
     ...mapState({
       identityFiles: (state) => state.identityFiles,
-      cartificateFiles: (state) => state.cartificateFiles,
+      certificateFiles: (state) => state.certificateFiles,
     }),
   },
   async mounted() {

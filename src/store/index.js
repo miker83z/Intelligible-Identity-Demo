@@ -12,7 +12,7 @@ export default createStore({
     intelligibleIdentity: '',
     ipfs: '',
     identityFiles: [],
-    cartificateFiles: [],
+    certificateFiles: [],
   },
   mutations: {
     LOADING_SPINNER_SHOW_MUTATION(state, payload) {

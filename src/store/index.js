@@ -7,7 +7,8 @@ export default createStore({
     loadingDescription: '',
     web3Provider: '',
     networkVersion: '',
-    web3ProviderConnected: false,
+    web3RequestAccounts: [],
+    web3ProviderOnline: false,
     intelligibleIdentity: '',
     ipfs: '',
     identityFiles: [],
@@ -25,7 +26,10 @@ export default createStore({
       state.networkVersion = payload.netVer;
     },
     SET_WEB3_CONNECTED(state, payload) {
-      state.web3ProviderConnected = payload.connected;
+      state.web3ProviderOnline = payload.connected;
+    },
+    SET_WEB3_REQ_ACCOUNT(state, payload) {
+      state.web3RequestAccounts = payload.acc;
     },
     SET_INTELLIGIBLE_IDENTITY(state, payload) {
       state.intelligibleIdentity = payload.iid;
@@ -48,7 +52,13 @@ export default createStore({
       return typeof state.intelligibleIdentity === 'object';
     },
     noProvider(state) {
-      return !state.web3Provider || !state.web3ProviderConnected;
+      return !state.web3Provider;
+    },
+    notOnlineWeb3(state) {
+      return state.web3RequestAccounts.length === 0;
+    },
+    notEnabled(state) {
+      return state.web3Enabled;
     },
     getDocumentInfo(state) {
       return (payload) => {

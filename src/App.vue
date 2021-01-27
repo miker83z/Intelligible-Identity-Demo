@@ -26,15 +26,20 @@ export default {
       showLoading: (state) => state.showLoading,
       web3Provider: (state) => state.web3Provider,
     }),
-    ...mapGetters(["noProvider"]),
+    ...mapGetters(["noProvider", "notOnlineWeb3", "notEnabled"]),
   },
   watch: {
     noProvider(curValue, oldValue) {
-      if (curValue) {
-        setTimeout(this.checkWeb3Provider(), 3000);
-      } else if (!curValue && curValue != oldValue) {
+      if (curValue && curValue !== oldValue) {
+        console.log("qua");
+        this.web3ProviderInterval();
+      } else if (!curValue && curValue !== oldValue) {
         this.web3Provider.on("connect", () => this.checkWeb3Provider());
         this.web3Provider.on("disconnect", () => this.checkWeb3Provider());
+        this.web3Provider.on("accountsChanged", () =>
+          this.enableWeb3Provider()
+        );
+        this.web3Provider.on("chainChanged", () => this.checkNetworkId());
       }
     },
   },
@@ -44,11 +49,22 @@ export default {
   },
   created() {
     const ipfs = this.$ipfs;
-    this.checkWeb3Provider();
+    this.web3ProviderInterval();
     this.initIPFS({ ipfs });
   },
   methods: {
-    ...mapActions(["checkWeb3Provider", "initIPFS"]),
+    ...mapActions([
+      "checkWeb3Provider",
+      "enableWeb3Provider",
+      "checkNetworkId",
+      "initIPFS",
+    ]),
+    async web3ProviderInterval() {
+      await this.checkWeb3Provider();
+      if (!this.web3Provider) {
+        setTimeout(() => this.web3ProviderInterval(), 5000);
+      }
+    },
   },
 };
 </script>

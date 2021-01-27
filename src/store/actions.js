@@ -1,7 +1,6 @@
 import { IntelligibleIdentity } from '@intelligiblesuite/identity';
-import intelligibleIdArtifact from '../assets/abi/IntelligibleIdentity.json';
-import detectEthereumProvider from '@metamask/detect-provider';
 import config from '../configs/config.js';
+import detectEthereumProvider from '@metamask/detect-provider';
 const uint8ArrayConcat = require('uint8arrays/concat');
 const uint8ArrayFromString = require('uint8arrays/from-string');
 const uint8ArrayToString = require('uint8arrays/to-string');
@@ -12,10 +11,25 @@ export default {
 
     if (provider) {
       commit('SET_WEB3_PROVIDER', { provider });
+      await dispatch('enableWeb3Provider');
       dispatch('checkWeb3Connected');
       dispatch('checkNetworkId');
     } else {
       commit('SET_WEB3_PROVIDER', { provider: '' });
+    }
+  },
+
+  async enableWeb3Provider({ state, commit }) {
+    const p = state.web3Provider;
+    if (!p) {
+      commit('SET_NETWORK_VERSION', { netVer: '' });
+      throw new Error('No web3 provider (Metamask) available!');
+    }
+    try {
+      const acc = await p.request({ method: 'eth_requestAccounts' });
+      commit('SET_WEB3_REQ_ACCOUNT', { acc });
+    } catch (error) {
+      commit('SET_WEB3_REQ_ACCOUNT', { acc: '' });
     }
   },
 
@@ -64,7 +78,12 @@ export default {
         loading: true,
         description: 'Preparing your Ethereum token...',
       });
-      await iid.prepareNewIdentityWeb3(p, 0, intelligibleIdArtifact, networkId);
+      await iid.prepareNewIdentityWeb3(
+        p,
+        0,
+        config.intelligibleIdArtifact,
+        networkId
+      );
       iid.setPersonalInformation(payload);
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
@@ -109,7 +128,7 @@ export default {
         p,
         0,
         undefined,
-        intelligibleIdArtifact,
+        config.intelligibleIdArtifact,
         networkId
       );
       commit('LOADING_SPINNER_SHOW_MUTATION', {
@@ -150,10 +169,11 @@ export default {
       );
 
       const listCid = await dispatch('retrievePublishedListIPFS');
+      let listJson = { identities: [], certificates: [] };
+      if (listCid !== undefined) {
+        listJson = JSON.parse(await dispatch('retrieveIPFS', { cid: listCid }));
+      }
 
-      const list = await dispatch('retrieveIPFS', { cid: listCid });
-
-      const listJson = JSON.parse(list); //{ identities: [], certificates: [] };
       listJson.identities.push({
         id: fileUploaded.cid.toString(),
         name: payload.iid.information.name,
@@ -162,7 +182,8 @@ export default {
         uint8ArrayFromString(JSON.stringify(listJson))
       );
 
-      await ipfs.name.publish(listUploaded.cid);
+      const ipns = await ipfs.name.publish(listUploaded.cid);
+      console.log(ipns);
 
       return fileUploaded;
     } catch (err) {
@@ -193,7 +214,7 @@ export default {
     }
     try {
       const published = [];
-      for await (const p of ipfs.name.resolve(config.IPFS_DB_IPNS)) {
+      for await (const p of ipfs.name.resolve(config.ipfsIPNS)) {
         published.push(p);
       }
       return published[published.length - 1];
@@ -209,8 +230,10 @@ export default {
     }
     try {
       const listCid = await dispatch('retrievePublishedListIPFS');
-      const list = await dispatch('retrieveIPFS', { cid: listCid });
-      const listJson = JSON.parse(list);
+      let listJson = { identities: [], certificates: [] };
+      if (listCid !== undefined) {
+        listJson = JSON.parse(await dispatch('retrieveIPFS', { cid: listCid }));
+      }
       listJson.identities.forEach((file) => {
         if (!state.identityFiles.some((elem) => elem.id === file.id))
           commit('ADD_IDENTITY_FILE', { file });

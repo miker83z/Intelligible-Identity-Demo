@@ -230,6 +230,41 @@ export default {
     }
   },
 
+  async signCertificate({ commit, dispatch, state }, payload) {
+    const p = state.web3Provider;
+    const networkId = state.networkVersion;
+    if (!p || !networkId) {
+      throw new Error('No web3 provider (Metamask) available!');
+    }
+    const iid = state.intelligibleIdentity;
+    if (!iid) {
+      throw new Error('Intelligible Identity available!');
+    }
+    try {
+      commit('LOADING_SPINNER_SHOW_MUTATION', {
+        loading: true,
+        description:
+          'Please sign it, if you agree with the information presented',
+      });
+      const signature = await iid.web3.signData(
+        payload.ice.akn.finalizeNoConclusions()
+      );
+      payload.ice.akn.addSignature(signature, 'ownerSignature');
+      commit('LOADING_SPINNER_SHOW_MUTATION', {
+        loading: true,
+        description: 'Uploading the document to IPFS',
+      });
+      const fileAdded = await dispatch('publishIPFSCertificate', {
+        ice: payload.ice,
+      });
+
+      return fileAdded.cid.toString();
+    } catch (error) {
+      console.log(error);
+      return '';
+    }
+  },
+
   async initIPFS({ commit }, payload) {
     try {
       const ipfs = await payload.ipfs;

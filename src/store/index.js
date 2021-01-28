@@ -51,6 +51,9 @@ export default createStore({
     isAuthenticated(state) {
       return typeof state.intelligibleIdentity === 'object';
     },
+    getIntelligibleIdentity(state) {
+      return state.intelligibleIdentity;
+    },
     noProvider(state) {
       return !state.web3Provider;
     },

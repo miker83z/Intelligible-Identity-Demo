@@ -17,6 +17,7 @@
     "vue": "^3.0.0",
     "vue-codemirror": "^4.0.6",
     "vue-router": "^4.0.3",
+    "vue-sidebar-menu": "^5.0.0-alpha.7",
     "vue3-code-mirror": "^1.0.3",
     "vuex": "^4.0.0-rc.2"
   },

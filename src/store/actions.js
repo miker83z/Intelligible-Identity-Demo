@@ -132,6 +132,7 @@ export default {
         config.intelligibleIdArtifact,
         networkId
       );
+      commit('SET_WEB3_URI', { web3URI });
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
         description: 'Getting the Akoma Ntoso Identity document from IPFS...',

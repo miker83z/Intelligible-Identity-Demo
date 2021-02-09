@@ -1,5 +1,6 @@
 <template>
   <Loader v-if="showLoading"></Loader>
+  <Wallet v-if="isAuthenticated" />
   <Navigation />
   <div class="alert alert-danger" v-if="noProvider">
     Please install MetaMask! -> More info
@@ -12,6 +13,7 @@
 
 <script>
 import Navigation from "./components/Navigation.vue";
+import Wallet from "./components/Wallet.vue";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { defineAsyncComponent } from "vue";
 
@@ -55,6 +57,7 @@ export default {
   components: {
     Navigation,
     Loader,
+    Wallet,
   },
   created() {
     const ipfs = this.$ipfs;

@@ -10,6 +10,7 @@ export default createStore({
     web3RequestAccounts: [],
     web3ProviderOnline: false,
     intelligibleIdentity: '',
+    web3URI: '',
     ipfs: '',
     identityFiles: [],
     certificateFiles: [],
@@ -34,6 +35,9 @@ export default createStore({
     SET_INTELLIGIBLE_IDENTITY(state, payload) {
       state.intelligibleIdentity = payload.iid;
     },
+    SET_WEB3_URI(state, payload) {
+      state.web3URI = payload.web3URI;
+    },
     SET_IPFS(state, payload) {
       state.ipfs = payload.ipfs;
     },
@@ -53,6 +57,9 @@ export default createStore({
     },
     getIntelligibleIdentity(state) {
       return state.intelligibleIdentity;
+    },
+    getWeb3URI(state) {
+      return state.web3URI;
     },
     noProvider(state) {
       return !state.web3Provider;

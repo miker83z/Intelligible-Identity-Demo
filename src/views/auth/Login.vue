@@ -56,11 +56,24 @@ export default {
         this.$router.push("/documents");
       } catch (e) {
         this.loginError = e;
-      } finally {
         this.showLoading({
-          loading: false,
-          description: " ",
+          loading: true,
+          description: e + " ->You are being redirected to signup page<-",
         });
+        setTimeout(() => {
+          this.showLoading({
+            loading: false,
+            description: " ",
+          });
+          this.$router.push("/signup");
+        }, 4000);
+      } finally {
+        if (!this.loginError) {
+          this.showLoading({
+            loading: false,
+            description: " ",
+          });
+        }
       }
     },
   },

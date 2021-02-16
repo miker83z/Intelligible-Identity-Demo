@@ -101,7 +101,9 @@ export default {
         loading: true,
         description: 'Finalizing your Ethereum token...',
       });
-      await iid.finalizeNewIdentityWeb3(fileAdded.cid.toString());
+      const web3URI = fileAdded.cid.toString();
+      commit('SET_WEB3_URI', { web3URI });
+      await iid.finalizeNewIdentityWeb3(web3URI);
       commit('SET_INTELLIGIBLE_IDENTITY', { iid });
     } catch (error) {
       console.log(error);
@@ -120,29 +122,26 @@ export default {
     }
 
     const iid = new IntelligibleIdentity();
-    try {
-      commit('LOADING_SPINNER_SHOW_MUTATION', {
-        loading: true,
-        description: 'Getting the information from your Ethereum token...',
-      });
-      const web3URI = await iid.fromWeb3Address(
-        p,
-        0,
-        undefined,
-        config.intelligibleIdArtifact,
-        networkId
-      );
-      commit('SET_WEB3_URI', { web3URI });
-      commit('LOADING_SPINNER_SHOW_MUTATION', {
-        loading: true,
-        description: 'Getting the Akoma Ntoso Identity document from IPFS...',
-      });
-      const aknString = await dispatch('retrieveIPFS', { cid: web3URI });
-      iid.fromStringAKN(aknString);
-      commit('SET_INTELLIGIBLE_IDENTITY', { iid });
-    } catch (error) {
-      console.log(error);
-    }
+    commit('LOADING_SPINNER_SHOW_MUTATION', {
+      loading: true,
+      description: 'Getting the information from your Ethereum token...',
+    });
+    const web3URI = await iid.fromWeb3Address(
+      p,
+      0,
+      undefined,
+      config.intelligibleIdArtifact,
+      networkId
+    );
+    commit('SET_WEB3_URI', { web3URI });
+    commit('LOADING_SPINNER_SHOW_MUTATION', {
+      loading: true,
+      description: 'Getting the Akoma Ntoso Identity document from IPFS...',
+    });
+    console.log('Web3 URI: ' + web3URI);
+    const aknString = await dispatch('retrieveIPFS', { cid: web3URI });
+    iid.fromStringAKN(aknString);
+    commit('SET_INTELLIGIBLE_IDENTITY', { iid });
   },
 
   logout({ commit }) {

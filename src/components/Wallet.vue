@@ -13,7 +13,7 @@ export default {
     this.menu[1].title = this.getIntelligibleIdentity.information.name;
     this.menu[2].title = this.getIntelligibleIdentity.information.email;
     this.menu[3].child[0].title = this.getIntelligibleIdentity.web3.address;
-    this.menu[5].href = "/documents/" + this.getWeb3URI;
+    this.menu[4].href = "/documents/" + this.getWeb3URI;
   },
   data() {
     return {
@@ -36,15 +36,6 @@ export default {
           child: [
             {
               title: "Your Ethereum Address",
-            },
-          ],
-        },
-        {
-          title: "Algorand Address",
-          icon: "zmdi zmdi-lock",
-          child: [
-            {
-              title: "Your Algorand Address",
             },
           ],
         },

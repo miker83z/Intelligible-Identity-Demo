@@ -1,6 +1,6 @@
-import { IntelligibleIdentity } from '@intelligiblesuite/identity';
+/*import { IntelligibleIdentity } from '@intelligiblesuite/identity';
 import { IntelligibleCertificate } from '@intelligiblesuite/certificates';
-import config from '../configs/config.js';
+import config from '../../configs/config.js';
 import detectEthereumProvider from '@metamask/detect-provider';
 const uint8ArrayConcat = require('uint8arrays/concat');
 const uint8ArrayFromString = require('uint8arrays/from-string');
@@ -63,15 +63,33 @@ export default {
   },
 
   async signup({ dispatch }, payload) {
-    return dispatch('simpleNoAlgo', payload);
+    return dispatch('simpleNewIdentity', payload);
   },
 
-  async simpleNoAlgo({ commit, dispatch, state }, payload) {
+  async simpleNewIdentity({ commit, dispatch, state }, payload) {
     const p = state.web3Provider;
     const networkId = state.networkVersion;
     if (!p || !networkId) {
       throw new Error('No web3 provider (Metamask) available!');
     }
+    const nowDate = new Date().toISOString();
+    payload.name = payload.name.replace(/[^a-z0-9]/gi, '_') + nowDate;
+
+    const idInfo = JSON.parse(JSON.stringify(config.identityTemplate));
+    const todayDate = nowDate.slice(0, 10);
+    idInfo.information.identityDate = todayDate;
+    idInfo.information.identityExpression = `DID@${nowDate}`;
+    idInfo.information.name = payload.name;
+    idInfo.information.email = payload.email;
+    idInfo.references.idIssuer.name = payload.name;
+    idInfo.references.idIssuer['@href'] =
+      idInfo.references.idIssuer['@href'] + payload.name + '/';
+    idInfo.references.idIssuerRepresentative.name = payload.name;
+    idInfo.references.idIssuerRepresentative['@href'] =
+      idInfo.references.idIssuerRepresentative['@href'] + payload.name + '/';
+    idInfo.references.idReceiver.name = payload.name;
+    idInfo.references.idReceiver['@href'] =
+      idInfo.references.idReceiver['@href'] + payload.name + '/';
 
     const iid = new IntelligibleIdentity();
     try {
@@ -79,13 +97,8 @@ export default {
         loading: true,
         description: 'Preparing your Ethereum token...',
       });
-      await iid.prepareNewIdentityWeb3(
-        p,
-        0,
-        config.intelligibleIdArtifact,
-        networkId
-      );
-      iid.setPersonalInformation(payload);
+      await iid.prepareNewIdentityWeb3(p, 0, undefined, networkId);
+      iid.setIdentityInformation(idInfo.information, idInfo.references);
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
         description:
@@ -126,13 +139,7 @@ export default {
       loading: true,
       description: 'Getting the information from your Ethereum token...',
     });
-    const web3URI = await iid.fromWeb3Address(
-      p,
-      0,
-      undefined,
-      config.intelligibleIdArtifact,
-      networkId
-    );
+    const web3URI = await iid.fromWeb3Address(p, 0, undefined, networkId);
     commit('SET_WEB3_URI', { web3URI });
     commit('LOADING_SPINNER_SHOW_MUTATION', {
       loading: true,
@@ -148,6 +155,7 @@ export default {
     commit('SET_INTELLIGIBLE_IDENTITY', {
       iid: '',
     });
+    commit('SET_WEB3_URI', { web3URI: '' });
   },
 
   async submitCertificate({ dispatch }, payload) {
@@ -396,4 +404,16 @@ export default {
       console.log(err);
     }
   },
+};*/
+
+import web3provider from './web3provider';
+import identity from './identity';
+import certificate from './certificate';
+import ipfs from './ipfs';
+
+export default {
+  ...web3provider,
+  ...identity,
+  ...certificate,
+  ...ipfs,
 };

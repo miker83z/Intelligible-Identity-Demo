@@ -3,38 +3,60 @@
     <div class="row">
       <div class="col-md-12">
         <h2>Document Details</h2>
-        <div v-if="infos !== undefined && infos.type === 'Identity'">
-          <table class="table">
+        <div
+          v-if="
+            documentObj !== undefined && documentObj.information !== undefined
+          "
+        >
+          <table id="firstTable" class="table">
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Id</th>
+                <th>Key</th>
+                <th>Value</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{{ infos.type }}</td>
-                <td>{{ infos.name }}</td>
-                <td>{{ infos.id }}</td>
+              <tr
+                v-for="row in Object.keys(documentObj.information)"
+                v-bind:key="row"
+              >
+                <td>{{ row }}</td>
+                <td>
+                  {{
+                    typeof documentObj.information[row] !== "object"
+                      ? documentObj.information[row]
+                      : displayObjectInTable(documentObj.information[row])
+                  }}
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div v-else-if="infos !== undefined && infos.type === 'Certificate'">
-          <table class="table">
+        <div
+          v-if="
+            documentObj !== undefined && documentObj.references !== undefined
+          "
+        >
+          <table id="firstTable" class="table">
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Id</th>
+                <th>Key</th>
+                <th>Value</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{{ infos.type }}</td>
-                <td>{{ infos.name }}</td>
-                <td>{{ infos.id }}</td>
+              <tr
+                v-for="row in Object.keys(documentObj.references)"
+                v-bind:key="row"
+              >
+                <td>{{ row }}</td>
+                <td>
+                  {{
+                    typeof documentObj.references[row] !== "object"
+                      ? documentObj.references[row]
+                      : displayObjectInTable(documentObj.references[row])
+                  }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -120,7 +142,15 @@ export default {
     await this.$ipfs;
     try {
       this.cid = this.$route.params.id;
-      this.document = await this.retrieveIPFS({ cid: this.$route.params.id });
+      this.document = await this.retrieveIPFS({ cid: this.cid });
+      if (this.document.includes("intelligibleCertificate")) {
+        this.documentObj = new IntelligibleCertificate();
+        this.documentObj.fromStringAKN(this.document);
+      } else if (this.document.includes("intelligibleIdentity")) {
+        this.documentObj = new IntelligibleIdentity();
+        this.documentObj.fromStringAKN(this.document);
+      }
+      /*
       if (this.infos !== undefined && this.infos.type === "Certificate") {
         this.documentObj = new IntelligibleCertificate();
         this.documentObj.fromStringAKN(this.document);
@@ -135,7 +165,7 @@ export default {
           (t) => t["@eId"] == "tblock_2"
         ).p.addressWeb3;
         this.receiverWeb3Adress = ownerAddress;
-      }
+      }*/
     } catch (err) {
       console.log(err);
     } finally {
@@ -167,6 +197,31 @@ export default {
           description: " ",
         });
       }
+    },
+    displayObjectInTable(obj) {
+      var str = "";
+      Object.keys(obj).forEach((k) => {
+        if (
+          k !== "@eId" &&
+          k !== "FRBRuri" &&
+          k !== "FRBRdate" &&
+          k !== "FRBRcountry" &&
+          k !== "@as" &&
+          k !== "FRBRlanguage" &&
+          k !== "type" &&
+          k !== "@showAs"
+        ) {
+          str = str.concat(
+            k,
+            ": ",
+            typeof obj[k] !== "object"
+              ? obj[k]
+              : this.displayObjectInTable(obj[k]),
+            "; "
+          );
+        }
+      });
+      return str;
     },
   },
 };

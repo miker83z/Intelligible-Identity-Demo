@@ -1,0 +1,64 @@
+{
+  "information": {
+    "identityType": "person",
+    "identityDate": "todayDate",
+    "identityExpression": "DID@${todayDate}",
+    "name": "Person X",
+    "email": "person@x.com",
+    "FRBRWork": {},
+    "FRBRExpression": {},
+    "FRBRManifestation": {},
+    "additionalBody": {}
+  },
+  "references": {
+    "idIssuer": {
+      "type": "TLCPerson",
+      "name": "PersonX",
+      "@eId": "#idIssuer",
+      "@href": "/akn/eu/doc/intelligibleIdentity/person/",
+      "@showAs": "Issuer"
+    },
+    "idIssuerRole": {
+      "type": "TLCRole",
+      "name": "Issuer",
+      "@eId": "#issuerRole",
+      "@href": "/akn/ontology/roles/intelligibleIdentity/issuer",
+      "@showAs": "IssuerRole"
+    },
+    "idIssuerRepresentative": {
+      "type": "TLCPerson",
+      "name": "PersonX",
+      "@eId": "#idIssuerRepresentative",
+      "@href": "/akn/eu/doc/intelligibleIdentity/person/",
+      "@showAs": "Author"
+    },
+    "idIssuerRepresentativeRole": {
+      "type": "TLCRole",
+      "name": "IssuerRepresentative",
+      "@eId": "#issuerRepresentativeRole",
+      "@href": "/akn/ontology/roles/intelligibleIdentity/issuerRepresentative",
+      "@showAs": "IssuerRepresentativeRole"
+    },
+    "idIssuerSoftware": {
+      "type": "TLCObject",
+      "name": "IntelligibleSuite@0.1.0",
+      "@eId": "#issuerSoftware",
+      "@href": "/akn/eu/doc/object/software/IntelligibleSuite/ver@0.1.0.akn",
+      "@showAs": "IssuerSoftware"
+    },
+    "idReceiver": {
+      "type": "TLCPerson",
+      "name": "PersonX",
+      "@eId": "#idReceiver",
+      "@href": "/akn/eu/doc/intelligibleIdentity/person/",
+      "@showAs": "Receiver"
+    },
+    "idReceiverRole": {
+      "type": "TLCRole",
+      "name": "Receiver",
+      "@eId": "#receiverRole",
+      "@href": "/akn/ontology/roles/intelligibleIdentity/receiver",
+      "@showAs": "ReceiverRole"
+    }
+  }
+}

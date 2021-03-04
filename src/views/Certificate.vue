@@ -12,6 +12,26 @@
           id="register-form"
         >
           <div class="form-group">
+            <label for="type"><i class="zmdi zmdi-filter-list"></i></label>
+            &nbsp; &nbsp; &nbsp; &nbsp; Cert Type: &nbsp; &nbsp;
+            <select name="type" id="type" v-model.trim="certificateType">
+              <option value="GDPRCompliance">GDPRCompliance</option>
+              <option value="Other">Other</option>
+            </select>
+            <br />
+            <br />
+          </div>
+          <div class="form-group">
+            <label for="type"><i class="zmdi zmdi-labels"></i></label>
+            &nbsp; &nbsp; &nbsp; &nbsp; Certified Entity Type: &nbsp; &nbsp;
+            <select name="type" id="type" v-model.trim="certifiedEntityType">
+              <option value="software">software</option>
+              <option value="other">other</option>
+            </select>
+            <br />
+            <br />
+          </div>
+          <div class="form-group">
             <label for="name"><i class="zmdi zmdi-file-text"></i></label>
             <input
               type="text"
@@ -97,6 +117,8 @@ import { mapActions, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      certificateType: "GDPRCompliance",
+      certifiedEntityType: "software",
       name: "",
       uri: "",
       documentDigest: "",
@@ -146,6 +168,8 @@ export default {
       //registration
       try {
         await this.submitCertificate({
+          certificateType: this.certificateType,
+          certifiedEntityType: this.certifiedEntityType,
           name: this.name,
           uri: this.uri,
           documentDigest: this.documentDigest,

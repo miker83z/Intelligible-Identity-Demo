@@ -222,7 +222,10 @@ a:active {
 }
 
 input,
-select,
+select {
+  justify-self: end;
+}
+,
 textarea {
   outline: none;
   appearance: unset !important;

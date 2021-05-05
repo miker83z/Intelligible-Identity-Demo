@@ -41,7 +41,7 @@ export default {
         },
         {
           href: "/",
-          title: "Go to AKN Document ->",
+          title: "Go to Metadata Document ->",
           icon: "zmdi zmdi-account material-icons-name",
         },
       ],

@@ -145,27 +145,23 @@ export default {
       this.document = await this.retrieveIPFS({ cid: this.cid });
       if (this.document.includes("intelligibleCertificate")) {
         this.documentObj = new IntelligibleCertificate();
-        this.documentObj.fromStringAKN(this.document);
+        this.documentObj.fromStringMeta(this.document);
+        if (this.isAuthenticated && this.getIntelligibleIdentity) {
+          const tokenId = this.documentObj.meta.metaAndMain.metaDoc.doc.mainBody.tblock.find(
+            (t) => t["@eId"] == "tblock_2"
+          ).p.tokenId;
+          const { provider, mainAddress } = this.getIntelligibleIdentity.web3;
+          await this.documentObj.fromWeb3TokenId(
+            provider,
+            mainAddress,
+            tokenId
+          );
+          this.receiverWeb3Adress = this.documentObj.web3.address;
+        }
       } else if (this.document.includes("intelligibleIdentity")) {
         this.documentObj = new IntelligibleIdentity();
-        this.documentObj.fromStringAKN(this.document);
+        this.documentObj.fromStringMeta(this.document);
       }
-      /*
-      if (this.infos !== undefined && this.infos.type === "Certificate") {
-        this.documentObj = new IntelligibleCertificate();
-        this.documentObj.fromStringAKN(this.document);
-        const cidString = this.documentObj.akn.metaAndMain.akomaNtoso.doc.meta.references.TLCPerson.find(
-          (t) => t["@showAs"] == "EntityOwner"
-        )["@href"];
-        const ownerIdCid = cidString.split("##")[1];
-        const ownerIdDoc = await this.retrieveIPFS({ cid: ownerIdCid });
-        const iid = new IntelligibleIdentity();
-        iid.fromStringAKN(ownerIdDoc);
-        const ownerAddress = iid.akn.metaAndMain.akomaNtoso.doc.mainBody.tblock.find(
-          (t) => t["@eId"] == "tblock_2"
-        ).p.addressWeb3;
-        this.receiverWeb3Adress = ownerAddress;
-      }*/
     } catch (err) {
       console.log(err);
     } finally {

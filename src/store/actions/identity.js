@@ -30,9 +30,9 @@ export default {
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
         description:
-          'Creating your Akoma Ntoso Identity document...\nPlease sign it, if you agree with the information presented',
+          'Creating your Metadata Identity document...\nPlease sign it, if you agree with the information presented',
       });
-      await iid.newIdentityAKN();
+      await iid.newIdentityMeta();
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
         description: 'Uploading the document to IPFS',
@@ -78,10 +78,10 @@ export default {
     const web3URI = await iid.fromWeb3Address(p, 0, addressWeb3, networkId);
     commit('LOADING_SPINNER_SHOW_MUTATION', {
       loading: true,
-      description: 'Getting the Akoma Ntoso Identity document from IPFS...',
+      description: 'Getting the Metadata Identity document from IPFS...',
     });
-    const aknString = await dispatch('retrieveIPFS', { cid: web3URI });
-    iid.fromStringAKN(aknString);
+    const metaString = await dispatch('retrieveIPFS', { cid: web3URI });
+    iid.fromStringMeta(metaString);
 
     return { web3URI, iid };
   },

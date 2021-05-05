@@ -40,21 +40,21 @@ export default {
       commit('LOADING_SPINNER_SHOW_MUTATION', {
         loading: true,
         description:
-          'Creating your Akoma Ntoso Identity document...\nPlease sign it, if you agree with the information presented',
+          'Creating your Metadata Identity document...\nPlease sign it, if you agree with the information presented',
       });
       /*const ipfs = state.ipfs;
       if (!ipfs) {
         throw new Error('No ipfs provider available!');
       }
       const fileUploaded = await ipfs.add(
-        uint8ArrayFromString(iid.akn.finalize()),
+        uint8ArrayFromString(iid.meta.finalize()),
         { onlyHash: true }
       );*/
-      ice.newCertificateAKN();
+      ice.newCertificateMeta();
       const signature = await iid.web3.signData(
-        ice.akn.finalizeNoConclusions()
+        ice.meta.finalizeNoConclusions()
       );
-      ice.akn.addSignature(
+      ice.meta.addSignature(
         certInfo.references.certIssuerRepresentative['@eId'],
         certInfo.references.certIssuerRepresentative.name,
         certInfo.references.certIssuerRepresentativeRole['@eId'],
@@ -99,13 +99,13 @@ export default {
       });
       if (
         payload.ice.references.certReceiver['@href'] !==
-        IIRFilterNode.references.idReceiver['@href']
+        iid.references.idReceiver['@href']
       )
         throw new Error('Only the receiver can sign!');
       const signature = await iid.web3.signData(
-        payload.ice.akn.finalizeNoConclusions()
+        payload.ice.meta.finalizeNoConclusions()
       );
-      payload.ice.akn.addSignature(
+      payload.ice.meta.addSignature(
         payload.ice.references.certReceiver['@eId'],
         payload.ice.references.certReceiver.name,
         payload.ice.references.certReceiverRole['@eId'],

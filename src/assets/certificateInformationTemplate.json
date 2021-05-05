@@ -14,49 +14,49 @@
       "type": "TLCOrganization",
       "name": "IntelligibleCompany",
       "@eId": "#certIssuer",
-      "@href": "/akn/eu/doc/intelligibleIdentity/organization/IntelligibleCompany",
+      "@href": "/meta/eu/doc/intelligibleIdentity/organization/IntelligibleCompany",
       "@showAs": "Issuer"
     },
     "certIssuerRole": {
       "type": "TLCRole",
       "name": "Issuer",
       "@eId": "#certIssuerRole",
-      "@href": "/akn/ontology/roles/intelligibleCertificate/issuer",
+      "@href": "/meta/ontology/roles/intelligibleCertificate/issuer",
       "@showAs": "IssuerRole"
     },
     "certIssuerRepresentative": {
       "type": "TLCPerson",
       "name": "PersonX",
       "@eId": "#certIssuerRepresentative",
-      "@href": "/akn/eu/doc/intelligibleIdentity/person/",
+      "@href": "/meta/eu/doc/intelligibleIdentity/person/",
       "@showAs": "Author"
     },
     "certIssuerRepresentativeRole": {
       "type": "TLCRole",
       "name": "IssuerRepresentative",
       "@eId": "#certIssuerRepresentativeRole",
-      "@href": "/akn/ontology/roles/intelligibleCertificate/issuerRepresentative",
+      "@href": "/meta/ontology/roles/intelligibleCertificate/issuerRepresentative",
       "@showAs": "IssuerRepresentativeRole"
     },
     "certIssuerSoftware": {
       "type": "TLCObject",
       "name": "IntelligibleSuite@0.1.0",
       "@eId": "#certIssuerSoftware",
-      "@href": "/akn/eu/doc/object/software/IntelligibleSuite/ver@0.1.0.akn",
+      "@href": "/meta/eu/doc/object/software/IntelligibleSuite/ver@0.1.0.meta",
       "@showAs": "IssuerSoftware"
     },
     "certReceiver": {
       "type": "TLCPerson",
       "name": "PersonY",
       "@eId": "#certReceiver",
-      "@href": "/akn/eu/doc/intelligibleIdentity/person/",
+      "@href": "/meta/eu/doc/intelligibleIdentity/person/",
       "@showAs": "Receiver"
     },
     "certReceiverRole": {
       "type": "TLCRole",
       "name": "Receiver",
       "@eId": "#certReceiverRole",
-      "@href": "/akn/ontology/roles/intelligibleCertificate/receiver",
+      "@href": "/meta/ontology/roles/intelligibleCertificate/receiver",
       "@showAs": "ReceiverRole"
     },
     "certEntity": {

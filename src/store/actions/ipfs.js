@@ -20,7 +20,7 @@ export default {
     }
     try {
       const fileUploaded = await ipfs.add(
-        uint8ArrayFromString(payload.iid.akn.finalize())
+        uint8ArrayFromString(payload.iid.meta.finalize())
       );
 
       const listCid = await dispatch('retrievePublishedListIPFS');
@@ -53,7 +53,7 @@ export default {
     }
     try {
       const fileUploaded = await ipfs.add(
-        uint8ArrayFromString(payload.ice.akn.finalize())
+        uint8ArrayFromString(payload.ice.meta.finalize())
       );
 
       const listCid = await dispatch('retrievePublishedListIPFS');
@@ -64,8 +64,8 @@ export default {
 
       listJson.certificates.push({
         id: fileUploaded.cid.toString(),
-        name: payload.ice.information.name,
-        docURI: payload.ice.information.uri,
+        name: payload.ice.information.certificateExpression,
+        docURI: payload.ice.references.certEntity['@href'],
       });
       const listUploaded = await ipfs.add(
         uint8ArrayFromString(JSON.stringify(listJson))

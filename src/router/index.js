@@ -18,6 +18,12 @@ const routes = [
   { path: '/certificates', component: Certificate, meta: { auth: true } },
   { path: '/documents', component: Documents },
   { path: '/documents/:id', component: Document },
+  {
+    path: '/docs',
+    beforeEnter() {
+      location.href = 'https://miker83z.github.io/intelligible-docs/';
+    },
+  },
 ];
 
 const router = createRouter({

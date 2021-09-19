@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --port 2222",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "postinstall": "npm run build",
+    "start": "node server.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@intelligiblesuite/certificates": "file:../IntelligibleSuite/packages/Intelligible-Certificate-SDK",
-    "@intelligiblesuite/identity": "file:../IntelligibleSuite/packages/Intelligible-Identity-SDK",
+    "@intelligiblesuite/certificates": "file:packages/Intelligible-Certificate-SDK/intelligiblesuite-certificates-1.0.0.tgz",
+    "@intelligiblesuite/identity": "file:packages/Intelligible-Identity-SDK/intelligiblesuite-identity-1.0.0.tgz",
     "@metamask/detect-provider": "^1.2.0",
     "core-js": "^3.6.5",
     "ipfs-core": "^0.4.1",
     "uint8arrays": "^2.0.5",
+    "express": "^4.17.0",
+    "serve-static": "^1.14.1",
     "vue": "^3.0.0",
     "vue-codemirror": "^4.0.6",
     "vue-router": "^4.0.3",
@@ -24,7 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.13.8",
     "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-eslint": "v5.0.0-beta.4",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",

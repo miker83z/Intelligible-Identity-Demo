@@ -36,6 +36,9 @@
         <li class="nav-item" v-if="isAuthenticated">
           <a href="#" class="nav-link" @click.prevent="onLogout()">Logout</a>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/docs">Dev Docs</router-link>
+        </li>
       </ul>
     </div>
   </nav>

@@ -9,6 +9,10 @@
     "start": "node server.js",
     "lint": "vue-cli-service lint"
   },
+  "engines": {
+    "node": "16.8.0",
+    "npm": "7.21.1"
+  },
   "dependencies": {
     "@intelligiblesuite/certificates": "file:packages/Intelligible-Certificate-SDK/intelligiblesuite-certificates-1.0.0.tgz",
     "@intelligiblesuite/identity": "file:packages/Intelligible-Identity-SDK/intelligiblesuite-identity-1.0.0.tgz",
